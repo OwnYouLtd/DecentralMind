@@ -1,0 +1,61 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Swift
+.build/
+.swiftpm/
+*.swp
+*~
+DerivedData/
+build/
+
+# Python
+venv/
+*.pyc
+__pycache__/
+.env
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Tool-specific
+.cursorindexingignore
+.build.bak/
+.claude/
+TestResults/
+models/
+
+# Don't include the cloned repo in itself
+OwnYou_MVP/
+
+# Xcode
+xcuserdata/
+*.xcodeproj
+build/
+DerivedData/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# OS generated files
+.DS_Store
+.AppleDouble
+.LSOverride
+*~
+.trashes
+
+# Backup files
+*.backup
+
+# Cache files
+.home/
+
+# Resources with models
+DecentralMindApp/DecentralMindApp/Resources/ 
