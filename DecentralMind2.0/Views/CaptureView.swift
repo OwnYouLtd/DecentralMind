@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CaptureView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
     @State private var textInput = ""
     @State private var showingAlert = false
     @State private var alertMessage = ""
@@ -40,8 +41,18 @@ struct CaptureView: View {
             }
             .padding()
             .navigationTitle("Capture")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
             .alert("Status", isPresented: $showingAlert) {
-                Button("OK") { }
+                Button("OK") { 
+                    dismiss() // Dismiss after user acknowledges the save
+                }
             } message: {
                 Text(alertMessage)
             }
@@ -49,24 +60,51 @@ struct CaptureView: View {
     }
 
     private func processContent() {
-        appState.dataFlowManager.createContent(
-            text: textInput,
-            type: "text/plain" // Default to plain text for this simplified view
-        )
+        print("🔵 Save button pressed with text: '\(textInput)'")
+        print("🔵 AppState available: \(appState)")
+        print("🔵 DataFlowManager available: \(appState.dataFlowManager)")
         
-        // Provide user feedback
-        alertMessage = "Content saved successfully!"
-        showingAlert = true
+        // Store the text before clearing it
+        let textToSave = textInput
         
-        // Clear the input
+        // Clear the input immediately for better UX
         textInput = ""
+        
+        // Show immediate feedback
+        alertMessage = "Saving content..."
+        showingAlert = false // Don't show alert yet
+        
+        // Perform the save operation asynchronously
+        Task {
+            do {
+                appState.dataFlowManager.createContent(
+                    text: textToSave,
+                    type: "text/plain"
+                )
+                
+                print("✅ Content creation called successfully")
+                
+                // Update UI on main thread
+                await MainActor.run {
+                    alertMessage = "Content saved successfully!"
+                    showingAlert = true
+                }
+            } catch {
+                print("❌ Error creating content: \(error)")
+                await MainActor.run {
+                    alertMessage = "Failed to save content: \(error.localizedDescription)"
+                    showingAlert = true
+                    // Restore text if save failed
+                    textInput = textToSave
+                }
+            }
+        }
     }
 }
 
 struct CaptureView_Previews: PreviewProvider {
     static var previews: some View {
-        let context = PersistenceController.preview.container.viewContext
         CaptureView()
-            .environmentObject(AppState(context: context))
+            .environmentObject(AppState())
     }
 }

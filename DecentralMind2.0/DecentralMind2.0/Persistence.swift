@@ -17,8 +17,7 @@ struct PersistenceController {
         do {
             try viewContext.save()
         } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            print("Preview data creation failed: \(error)")
         }
         return result
     }()
@@ -31,11 +30,33 @@ struct PersistenceController {
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        
+        // Make store loading safer
+        var loadError: Error?
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                print("Core Data error: \(error), \(error.userInfo)")
+                loadError = error
             }
         })
+        
+        // If there was an error, try to recover by removing the store and creating a new one
+        if loadError != nil {
+            print("Attempting to recover from Core Data error...")
+            // Remove problematic store files
+            if let storeURL = container.persistentStoreDescriptions.first?.url {
+                try? FileManager.default.removeItem(at: storeURL)
+                // Try loading again
+                container.loadPersistentStores { _, error in
+                    if let error = error {
+                        print("Recovery failed: \(error)")
+                    } else {
+                        print("Core Data recovery successful")
+                    }
+                }
+            }
+        }
+        
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 } 

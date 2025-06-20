@@ -1,3 +1,11 @@
+//
+//  ContentEntity+CoreDataProperties.swift
+//  DecentralMind2.0
+//
+//  Created by Assistant on 20/06/2025.
+//
+//
+
 import Foundation
 import CoreData
 
@@ -7,6 +15,7 @@ extension ContentEntity {
         return NSFetchRequest<ContentEntity>(entityName: "ContentEntity")
     }
 
+    @NSManaged public var category: String?
     @NSManaged public var cid: String?
     @NSManaged public var content: String?
     @NSManaged public var contentType: String?
@@ -15,6 +24,7 @@ extension ContentEntity {
     @NSManaged public var embedding: Data?
     @NSManaged public var extractedText: String?
     @NSManaged public var id: UUID?
+    @NSManaged public var ipfsHash: String?
     @NSManaged public var isEncrypted: Bool
     @NSManaged public var isLocal: Bool
     @NSManaged public var keyConcepts: String?
@@ -25,9 +35,5 @@ extension ContentEntity {
     @NSManaged public var syncStatus: String?
     @NSManaged public var tags: String?
     @NSManaged public var updatedAt: Date?
-
-}
-
-extension ContentEntity : Identifiable {
 
 } 

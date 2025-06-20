@@ -9,10 +9,10 @@ class DataFlowManager: ObservableObject {
 
     @Published var contentEntities: [ContentEntity] = []
 
-    // The manager now takes the Core Data context directly.
-    init(context: NSManagedObjectContext) {
-        // Initialize the local storage manager with the context.
-        self.localStorageManager = LocalStorageManager(context: context)
+    // The manager now takes the Core Data context and MLXManager directly.
+    init(context: NSManagedObjectContext, mlxManager: RealMLXManager? = nil) {
+        // Initialize the local storage manager with the context and MLX manager.
+        self.localStorageManager = LocalStorageManager(context: context, mlxManager: mlxManager)
         
         // Establish a pipeline to receive updates from the local storage manager.
         self.localStorageManager.$contentEntities

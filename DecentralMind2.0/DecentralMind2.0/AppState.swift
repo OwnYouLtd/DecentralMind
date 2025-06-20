@@ -4,19 +4,35 @@ import CoreData
 
 @MainActor
 class AppState: ObservableObject {
+    @Published var selectedTab: Int = 0
+    @Published var isProcessing: Bool = false
+    
+    let mlxManager: RealMLXManager
+    let persistentContainer: NSPersistentContainer
     let dataFlowManager: DataFlowManager
-    let searchIndexManager: SearchIndexManager
+    let localStorageManager: LocalStorageManager
     
-    @Published var isInitialized = false
-    
-    // You can add other global app state properties here as needed.
-
-    init(context: NSManagedObjectContext) {
-        let dfm = DataFlowManager(context: context)
-        self.dataFlowManager = dfm
-        self.searchIndexManager = SearchIndexManager(dataFlowManager: dfm)
-        // Perform any initial setup for the app's state.
-        // For now, we can just mark it as initialized.
-        self.isInitialized = true
+    init() {
+        print("📱 Initializing AppState...")
+        
+        // Initialize CoreData
+        persistentContainer = PersistenceController.shared.container
+        
+        // Initialize MLX Manager
+        print("📱 Creating RealMLXManager...")
+        mlxManager = RealMLXManager()
+        
+        // Initialize managers
+        dataFlowManager = DataFlowManager(
+            context: persistentContainer.viewContext,
+            mlxManager: mlxManager
+        )
+        
+        localStorageManager = LocalStorageManager(
+            context: persistentContainer.viewContext,
+            mlxManager: mlxManager
+        )
+        
+        print("✅ AppState initialized successfully")
     }
 }

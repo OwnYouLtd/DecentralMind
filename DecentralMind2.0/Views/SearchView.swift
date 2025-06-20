@@ -19,7 +19,7 @@ struct SearchView: View {
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
         }
-        .onChange(of: searchText) { newValue in
+        .onChange(of: searchText) { _, newValue in
             performSearch(for: newValue)
         }
     }
@@ -47,7 +47,7 @@ struct SearchView: View {
     
     private var searchResultsList: some View {
         List(searchResults) { result in
-            NavigationLink(destination: ContentDetailView(content: result.contentEntity)) {
+            NavigationLink(destination: ContentDetailView(content: result.content)) {
                 SearchResultCard(result: result)
             }
         }
@@ -78,8 +78,73 @@ struct SearchView: View {
             return
         }
         
-        let query = SearchQuery(text: queryText)
-        self.searchResults = appState.searchIndexManager.search(query)
+        // Perform simple text-based search through the content
+        let allContent = appState.dataFlowManager.fetchAllContent()
+        let query = queryText.lowercased()
+        
+        self.searchResults = allContent.compactMap { content in
+            let contentText = (content.content ?? "").lowercased()
+            let summaryText = (content.summary ?? "").lowercased()
+            let tagsText = (content.tags ?? "").lowercased()
+            
+            if contentText.contains(query) || summaryText.contains(query) || tagsText.contains(query) {
+                let score = calculateRelevanceScore(content: content, query: query)
+                let processedContent = convertToProcessedContent(content: content)
+                let matchedTerms = findMatchedTerms(content: content, query: query)
+                return SearchResult(content: processedContent, relevanceScore: Float(score), matchedTerms: matchedTerms)
+            }
+            return nil
+        }.sorted { $0.relevanceScore > $1.relevanceScore }
+    }
+    
+    private func calculateRelevanceScore(content: ContentEntity, query: String) -> Double {
+        var score = 0.0
+        let contentText = (content.content ?? "").lowercased()
+        let summaryText = (content.summary ?? "").lowercased()
+        
+        // Higher score for matches in summary
+        if summaryText.contains(query) {
+            score += 2.0
+        }
+        
+        // Base score for content matches
+        if contentText.contains(query) {
+            score += 1.0
+        }
+        
+        return score
+    }
+    
+    private func convertToProcessedContent(content: ContentEntity) -> ProcessedContent {
+        return ProcessedContent(
+            id: content.id ?? UUID(),
+            title: content.summary?.isEmpty == false ? content.summary! : "Untitled",
+            content: content.content ?? "",
+            type: .text, // Default to text type for now
+            tags: (content.tags ?? "").split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) },
+            summary: content.summary ?? "",
+            keyConcepts: [],
+            sentiment: .neutral,
+            embedding: [],
+            createdAt: content.createdAt ?? Date(),
+            processedAt: content.processedAt
+        )
+    }
+    
+    private func findMatchedTerms(content: ContentEntity, query: String) -> [String] {
+        var matchedTerms: [String] = []
+        let terms = query.split(separator: " ").map { String($0) }
+        
+        for term in terms {
+            let contentText = (content.content ?? "").lowercased()
+            let summaryText = (content.summary ?? "").lowercased()
+            
+            if contentText.contains(term) || summaryText.contains(term) {
+                matchedTerms.append(term)
+            }
+        }
+        
+        return matchedTerms
     }
 }
 
@@ -89,18 +154,18 @@ struct SearchResultCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: iconForContentType(result.contentEntity.contentType))
+                Image(systemName: iconForContentType(result.content.type))
                     .foregroundColor(.purple)
-                Text(result.contentEntity.summary ?? "No Title")
+                Text(result.content.summary)
                     .font(.headline)
                     .lineLimit(1)
                 Spacer()
-                Text(String(format: "Score: %.2f", result.score))
+                Text(String(format: "Score: %.2f", result.relevanceScore))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             
-            Text(result.contentEntity.content ?? "No content...")
+            Text(result.content.content)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .lineLimit(3)
@@ -108,12 +173,14 @@ struct SearchResultCard: View {
         .padding(.vertical, 8)
     }
     
-    private func iconForContentType(_ type: String?) -> String {
+    private func iconForContentType(_ type: ContentType) -> String {
         switch type {
-        case "text/plain":
+        case .text:
             return "doc.text.fill"
-        case "image/jpeg", "image/png":
+        case .image:
             return "photo.fill"
+        case .document:
+            return "doc.fill"
         default:
             return "doc.fill"
         }
@@ -122,9 +189,8 @@ struct SearchResultCard: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        let context = PersistenceController.preview.container.viewContext
         // You might need to add some dummy data for the preview to be meaningful
         SearchView()
-            .environmentObject(AppState(context: context))
+            .environmentObject(AppState())
     }
 }

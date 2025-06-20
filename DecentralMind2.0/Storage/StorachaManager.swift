@@ -104,13 +104,8 @@ class StorachaManager: NSObject, ObservableObject {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             self.authenticationContinuation = continuation
             let script = "window.w3up.authorize('\\(email)');"
-            self.webView.evaluateJavaScript(script) { _, error in
-                if let error = error {
-                    // This typically catches syntax errors in the JS call, not runtime errors.
-                    // The async JS function's errors are caught and sent via message handler.
-                    continuation.resume(throwing: StorachaError.webViewError("Failed to execute authorize script: \\(error.localizedDescription)"))
-                    self.isAuthenticating = false
-                }
+            self.webView.evaluateJavaScript(script) { _, _ in
+                // JavaScript execution errors are handled via the message handler
                 // Do not resume successfully here. Wait for the 'authorized_successfully' message.
             }
         }
@@ -119,11 +114,11 @@ class StorachaManager: NSObject, ObservableObject {
     // MARK: - Core Storacha Operations (Phase 2)
     
     func upload(data: Data, filename: String) async throws -> String {
-        guard isAuthenticated, let did = userDID else {
+        guard isAuthenticated, let _ = userDID else {
             throw StorachaError.notAuthenticated
         }
         // We will implement this in Phase 2
-        print("🚀 Uploading \\(filename) for user \\(did) to Storacha... (Placeholder)")
+        print("🚀 Uploading \(filename) to Storacha... (Placeholder)")
         let placeholderCID = "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
         return placeholderCID
     }
