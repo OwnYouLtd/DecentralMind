@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24F74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ContentEntity" representedClassName="ContentEntity" syncable="YES">
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="contentType" optional="YES" attributeType="String"/>
+        <attribute name="detectedLanguage" optional="YES" attributeType="String"/>
+        <attribute name="embedding" optional="YES" attributeType="Binary"/>
+        <attribute name="extractedText" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="ipfsHash" optional="YES" attributeType="String"/>
+        <attribute name="isEncrypted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="keyConcepts" optional="YES" attributeType="String"/>
+        <attribute name="ocrConfidence" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="originalContent" optional="YES" attributeType="String"/>
+        <attribute name="processedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sentiment" optional="YES" attributeType="String"/>
+        <attribute name="summary" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="String"/>
+    </entity>
+</model>

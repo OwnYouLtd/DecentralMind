@@ -829,3 +829,195 @@ _**Assistant**_
 
 ---
 
+Excellent. Now that the GitHub CLI is installed, I can create the new repository and upload your project.
+
+I will now create a new public repository named `DecentralMind` in the `OwnYouLtd` organization, initialize a local git repository, commit your files, and then push them to the new repository on GitHub.
+
+---
+
+```bash
+gh repo create OwnYouLtd/DecentralMind --public --source=. --push
+```
+
+```
+<e OwnYouLtd/DecentralMind --public --source=. --push
+To get started with GitHub CLI, please run:  gh auth login
+Alternatively, populate the GH_TOKEN environment variable with a GitHub API authentication token.
+(base) nicholaslongcroft@Nicholass-Mac-Studio DecentralMind %
+```
+
+---
+
+It appears that while the GitHub CLI (`gh`) is installed, it has not yet been authenticated with your GitHub account.
+
+To proceed, you'll need to run the following command in your terminal and follow the on-screen instructions to log in to your GitHub account:
+`gh auth login`
+
+This will securely connect the `gh` tool to your GitHub account, allowing me to create repositories on your behalf. Please let me know once you have completed the authentication process.
+
+---
+
+_**User**_
+
+I am now logged in
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+Perfect. Now that you're logged in, I will proceed with creating the `DecentralMind` repository and uploading your project.
+
+---
+
+```bash
+gh repo create OwnYouLtd/DecentralMind --public --source=. --push
+```
+
+```
+<e OwnYouLtd/DecentralMind --public --source=. --push
+current directory is not a git repository. Run `git init` to initialize it
+(base) nicholaslongcroft@Nicholass-Mac-Studio DecentralMind %
+```
+
+---
+
+My apologies. The `--source=.` flag for the `gh` command requires the directory to already be a `git` repository. I will first initialize the repository and make the initial commit, and then I will create the remote repository and push to it.
+
+First, I'll initialize the git repository and commit all your files.
+
+---
+
+```bash
+git init && git add . && git commit -m "feat: Initial commit of DecentralMind project"
+```
+
+```
+<t -m "feat: Initial commit of DecentralMind project"
+Initialized empty Git repository in /Users/nicholaslongcroft/DecentralMind/.git/
+[main (root-commit) 21d46ba] feat: Initial commit of DecentralMind project
+ 76 files changed, 16384 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 .specstory/.gitignore
+ create mode 100644 .specstory/history/2025-06-16_15-12-resolve-ios-app-package-dependencies.md
+ create mode 100644 .specstory/history/2025-06-19_09-14-upload-file-to-github-repository.md
+ create mode 100644 ARCHITECTURE.md
+ create mode 100644 DEPLOYMENT.md
+ create mode 100644 DecentralMind/README.md
+ create mode 100644 DecentralMindApp/DecentralMindApp/Assets.xcassets/AccentColor.colorset/Contents.json
+ create mode 100644 DecentralMindApp/DecentralMindApp/Assets.xcassets/AppIcon.appiconset/Contents.json
+ create mode 100644 DecentralMindApp/DecentralMindApp/Assets.xcassets/Contents.json
+ create mode 100644 DecentralMindApp/DecentralMindApp/ContentEntity.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/ContentView.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Core/DataFlowManager.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Core/RealMLXManager.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/DecentralMind.xcdatamodeld/DecentralMind.xcdatamodel/c
+ontents
+ create mode 100644 DecentralMindApp/DecentralMindApp/DecentralMindApp.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Preview Content/Preview Assets.xcassets/Contents.json
+ create mode 100644 DecentralMindApp/DecentralMindApp/Search/SearchIndexManager.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Security/EncryptionManager.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Storage/LocalStorageManager.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Storage/StorachaManager.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Types.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Views/CaptureView.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Views/HomeView.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Views/SearchView.swift
+ create mode 100644 DecentralMindApp/DecentralMindApp/Views/SettingsView.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Extensions/Dictionary.swift
+ create mode 100644 DecentralMindApp/IPFSClient/HttpIo.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Info.plist
+ create mode 100644 DecentralMindApp/IPFSClient/IpfsApi.swift
+ create mode 100644 DecentralMindApp/IPFSClient/JsonType.swift
+ create mode 100644 DecentralMindApp/IPFSClient/MerkleNode.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Multipart.swift
+ create mode 100644 DecentralMindApp/IPFSClient/NetworkIo.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Block.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Bootstrap.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Config.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Dht.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Diag.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/File.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/IpfsObject.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Name.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Pin.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Refs.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Repo.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Stats.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Swarm.swift
+ create mode 100644 DecentralMindApp/IPFSClient/Subcommands/Update.swift
+ create mode 100644 DecentralMindApp/IPFSClient/SwiftIpfsApi.h
+ create mode 100644 DecentralMindApp/build_output.txt
+ create mode 100644 Package.swift
+ create mode 100644 README.md
+ create mode 100644 Scripts/convert_deepseek_model.py
+ create mode 100755 Scripts/run_tests.sh
+ create mode 100755 Scripts/setup.sh
+ create mode 100644 Sources/DecentralMind/Core/MLXManager.swift
+ create mode 100644 Sources/DecentralMind/OCR/GOTOCRManager.swift
+ create mode 100644 Sources/DecentralMind/OCR/OCRModels.swift
+ create mode 100644 Sources/DecentralMind/Storage/DataFlowManager.swift
+ create mode 100644 Tests/DecentralMindTests/DataFlowIntegrationTests.swift
+ create mode 100644 Tests/DecentralMindTests/IPFSManagerTests.swift
+ create mode 100644 Tests/DecentralMindTests/MLXManagerTests.swift
+ create mode 100644 development.config
+ create mode 100644 iOS-Swift-Compilation-Troubleshooting-Guide.md
+ create mode 100644 monitor_model_access.swift
+ create mode 100644 test_app_deepseek.swift
+ create mode 100644 test_app_functionality.swift
+ create mode 100644 test_app_in_simulator.swift
+ create mode 100644 test_content_processing.swift
+ create mode 100644 test_deepseek.swift
+ create mode 100644 test_exact_app_flow.swift
+ create mode 100644 test_full_workflow.swift
+ create mode 100644 test_mlx_functionality.swift
+ create mode 100644 test_model_access.swift
+ create mode 100644 test_real_app_deepseek.swift
+ create mode 100644 test_simple.swift
+(base) nicholaslongcroft@Nicholass-Mac-Studio DecentralMind %
+```
+
+---
+
+Great. The local repository has been created successfully.
+
+Now I will create the remote repository on GitHub and push your local commits to it. This will complete the process of uploading your project.
+
+---
+
+```bash
+gh repo create OwnYouLtd/DecentralMind --public --push --source=.
+```
+
+```
+<e OwnYouLtd/DecentralMind --public --push --source=.
+✓ Created repository OwnYouLtd/DecentralMind on github.com
+  https://github.com/OwnYouLtd/DecentralMind
+✓ Added remote https://github.com/OwnYouLtd/DecentralMind.git
+Enumerating objects: 105, done.
+Counting objects: 100% (105/105), done.
+Delta compression using up to 24 threads
+Compressing objects: 100% (94/94), done.
+Writing objects: 100% (105/105), 150.27 KiB | 10.02 MiB/s, done.
+Total 105 (delta 13), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (13/13), done.
+To https://github.com/OwnYouLtd/DecentralMind.git
+ * [new branch]      HEAD -> main
+branch 'main' set up to track 'origin/main'.
+✓ Pushed commits to https://github.com/OwnYouLtd/DecentralMind.git
+(base) nicholaslongcroft@Nicholass-Mac-Studio DecentralMind %
+```
+
+---
+
+Success! Your project has been uploaded to a new repository named `DecentralMind` in the `OwnYouLtd` organization on GitHub.
+
+You can view the repository here: [https://github.com/OwnYouLtd/DecentralMind](https://github.com/OwnYouLtd/DecentralMind)
+
+Is there anything else I can help you with?
+
+---
+

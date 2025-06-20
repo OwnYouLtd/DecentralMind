@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Storacha Bridge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <script type="module">
+        import { create } from 'https://unpkg.com/@web3-storage/w3up-client/dist/bundle.js'
+
+        let client;
+
+        // Helper to send messages to the native Swift app
+        function sendMessageToNative(message) {
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
+                window.webkit.messageHandlers.bridge.postMessage(message);
+            } else {
+                // For debugging in a real browser
+                console.log('Native bridge not available. Message:', message);
+            }
+        }
+
+        // 1. Initialize the w3up client
+        async function initialize() {
+            try {
+                client = await create();
+                console.log('w3up client created');
+                sendMessageToNative({ status: 'initialized' });
+            } catch (error) {
+                console.error('Failed to create w3up client:', error);
+                sendMessageToNative({ status: 'error', message: `Failed to create w3up client: ${error.message}` });
+            }
+        }
+
+        // 2. Check current authorization status
+        async function checkAuthorization() {
+            if (!client) {
+                sendMessageToNative({ status: 'error', message: 'Client not initialized.' });
+                return;
+            }
+            try {
+                const identity = await client.identity();
+                // A client always has an identity. The real test for being logged in
+                // is having delegated capabilities (proofs) from an account.
+                const proofs = await client.proofs()
+                if (proofs && proofs.length > 0) {
+                    const spaces = await client.spaces();
+                    console.log('User is authorized.');
+                    sendMessageToNative({ 
+                        status: 'authorized_successfully', 
+                        did: identity.did(),
+                        spaces: spaces.map(s => s.did())
+                    });
+                } else {
+                    console.log('User is not authorized.');
+                    sendMessageToNative({ status: 'not_authorized' });
+                }
+            } catch (error) {
+                console.error('Authorization check failed:', error);
+                sendMessageToNative({ status: 'error', message: `Authorization check failed: ${error.message}` });
+            }
+        }
+
+        // 3. Authorize the client
+        // This will open a new tab and wait for the user to confirm the authorization email.
+        async function authorize(email) {
+            if (!client) {
+                sendMessageToNative({ status: 'error', message: 'Client not initialized.' });
+                return;
+            }
+            try {
+                sendMessageToNative({ status: 'authorization_started' });
+                // The authorize method is a long-polling operation that resolves when the user clicks the email link.
+                await client.authorize(new URL(`mailto:${email}`));
+                console.log('Authorization successful!');
+                
+                const identity = await client.identity();
+                const spaces = await client.spaces();
+                sendMessageToNative({ 
+                    status: 'authorized_successfully', 
+                    did: identity.did(),
+                    spaces: spaces.map(s => s.did())
+                });
+            } catch (error) {
+                console.error('Authorization failed:', error);
+                sendMessageToNative({ status: 'error', message: `Authorization failed: ${error.message}` });
+            }
+        }
+        
+        // Make functions available on the window object
+        window.w3up = {
+            initialize,
+            authorize,
+            checkAuthorization
+        };
+
+        // Automatically initialize when the script loads
+        initialize();
+
+    </script>
+</body>
+</html> 
+</html> 
