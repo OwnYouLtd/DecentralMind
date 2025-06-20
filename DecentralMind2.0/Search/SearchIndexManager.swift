@@ -60,7 +60,7 @@ class SearchIndexManager: ObservableObject {
 
     private func extractTokens(from content: ContentEntity) -> Set<String> {
         var textCorpus = ""
-        textCorpus += content.originalContent ?? ""
+        textCorpus += content.content ?? ""
         textCorpus += " " + (content.extractedText ?? "")
         textCorpus += " " + (content.summary ?? "")
         textCorpus += " " + (content.tags ?? "")

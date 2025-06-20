@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var dataFlowManager: DataFlowManager
+    @EnvironmentObject var appState: AppState
     @State private var recentContent: [ContentEntity] = []
     @State private var isLoading = true
     @State private var stats = ContentStats(count: 0, totalSize: 0)
@@ -144,12 +144,12 @@ struct HomeView: View {
         isLoading = true
         defer { isLoading = false }
         
-        let allContent = dataFlowManager.fetchAllContent()
+        let allContent = appState.dataFlowManager.fetchAllContent()
         self.recentContent = Array(allContent.prefix(10))
     }
     
     private func loadStats() async {
-        self.stats = dataFlowManager.getContentStats()
+        self.stats = appState.dataFlowManager.getContentStats()
     }
 
     private func formatBytes(_ bytes: Int64) -> String {
@@ -229,7 +229,7 @@ struct ContentRowView: View {
                         .font(.headline)
                         .lineLimit(1)
                     
-                    Text(content.originalContent ?? "No content")
+                    Text(content.content ?? "No content")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
@@ -264,7 +264,8 @@ struct ContentRowView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
+        let context = PersistenceController.preview.container.viewContext
         HomeView()
-            .environmentObject(DataFlowManager(context: PersistenceController.preview.container.viewContext))
+            .environmentObject(AppState(context: context))
     }
 }

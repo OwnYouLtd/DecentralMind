@@ -61,7 +61,10 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsView()
-        .environmentObject(AppState())
+struct SettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        let context = PersistenceController.preview.container.viewContext
+        SettingsView()
+            .environmentObject(AppState(context: context))
+    }
 }

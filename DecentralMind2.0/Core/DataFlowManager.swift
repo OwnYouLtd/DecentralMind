@@ -20,18 +20,36 @@ class DataFlowManager: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // MARK: - Data Access
+    
+    func fetchAllContent() -> [ContentEntity] {
+        return localStorageManager.fetchAllContent()
+    }
+
+    func getContentStats() -> ContentStats {
+        return localStorageManager.getContentStats()
+    }
+
     // MARK: - Intents (Forwarded to LocalStorageManager)
     
     func createContent(text: String, type: String) {
         localStorageManager.createContent(text: text, type: type)
+        refreshContent()
     }
 
     func updateContent(_ entity: ContentEntity, with newText: String) {
         localStorageManager.updateContent(entity, with: newText)
+        refreshContent()
     }
 
     func deleteContent(_ entity: ContentEntity) {
         localStorageManager.deleteContent(entity)
+        refreshContent()
+    }
+
+    // A helper method to manually refresh the published content array.
+    private func refreshContent() {
+        self.contentEntities = localStorageManager.fetchAllContent()
     }
     
     // MARK: - Sync Logic (Placeholder)

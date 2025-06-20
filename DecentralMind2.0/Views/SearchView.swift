@@ -100,7 +100,7 @@ struct SearchResultCard: View {
                     .foregroundColor(.secondary)
             }
             
-            Text(result.contentEntity.originalContent ?? "No content...")
+            Text(result.contentEntity.content ?? "No content...")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .lineLimit(3)
